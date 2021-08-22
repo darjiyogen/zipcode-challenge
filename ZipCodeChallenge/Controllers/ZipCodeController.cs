@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace ZipCodeChallenge.Controllers
         ///     Inserts zip code
         /// </remarks>
         /// <param name="zipCode"></param>
-        [HttpGet("Insert")]
+        [HttpPost("{zipCode}")]
         public ActionResult<string> Insert(int zipCode)
         {
             // Only add to list if not present
@@ -42,10 +42,10 @@ namespace ZipCodeChallenge.Controllers
         ///     Delete zip code
         /// </remarks>
         /// <param name="zipCode"></param>
-        [HttpGet("Delete")]
+        [HttpDelete("{zipCode}")]
         public ActionResult<string> Delete(int zipCode)
         {
-           
+
             zipCodes.Remove(zipCode);
             return $"Zip code {zipCode} deleted.";
         }
@@ -57,7 +57,7 @@ namespace ZipCodeChallenge.Controllers
         ///     Checking zip code in a list
         /// </remarks>
         /// <param name="zipCode"></param>
-        [HttpGet("Has")]
+        [HttpGet("Has/{zipCode}")]
         public ActionResult<bool> Has(int zipCode)
         {
             return zipCodes.ContainsKey(zipCode);
@@ -78,7 +78,8 @@ namespace ZipCodeChallenge.Controllers
             int index = 0;
 
             // If only one zip code is present
-            if (zipCodes.Count == 1) {
+            if (zipCodes.Count == 1)
+            {
                 return zipCodes.ElementAt(0).Value.ToString();
             }
 
@@ -91,7 +92,8 @@ namespace ZipCodeChallenge.Controllers
                 int prevZip = zipCodes.ElementAt(i - 1).Value;
 
                 // For first element, add it directly on 0th index
-                if (i == 1) {
+                if (i == 1)
+                {
                     sequenceZips.Add(index, new int[] { prevZip });
                 }
 
@@ -106,7 +108,7 @@ namespace ZipCodeChallenge.Controllers
                 else
                 {
                     index++;
-                    sequenceZips.Add(index, new int[] { currentZip});
+                    sequenceZips.Add(index, new int[] { currentZip });
                 }
             }
 
@@ -119,7 +121,8 @@ namespace ZipCodeChallenge.Controllers
             }
             */
             // Go through our list of sequence Zipcodes
-            for (int i = 0; i < sequenceZips.Count; i++) {
+            for (int i = 0; i < sequenceZips.Count; i++)
+            {
 
                 // Take first zip
                 zipCodeString.Append(sequenceZips[i].First());
@@ -141,5 +144,14 @@ namespace ZipCodeChallenge.Controllers
             return zipCodeString.ToString();
         }
 
+        /// <summary>
+        /// Delete all
+        /// </summary>
+        [HttpPut("DeleteAll")]
+        public ActionResult<string> DeleteAll()
+        {
+            zipCodes.Clear();
+            return "All zip codes are removed";
+        }
     }
 }
